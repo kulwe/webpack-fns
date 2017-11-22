@@ -1,0 +1,28 @@
+{
+  "name": "webpack-fns",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kulwe/webpack-fns.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kulwe/webpack-fns/issues"
+  },
+  "homepage": "https://github.com/kulwe/webpack-fns#readme",
+  "description": "",
+  "dependencies": {
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "lodash": "^4.17.4",
+    "webpack": "^3.8.1"
+  }
+}
