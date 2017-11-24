@@ -3,22 +3,33 @@
  */
 const defaultsDeep=require('lodash/defaultsDeep');
 const get=require('lodash/get');
+const isArray=require('lodash/isArray');
+const last=require('lodash/last');
+const castArray=require('lodash/castArray');
+
 const path=require('path');
 const webpack=require('webpack');
 const firstAttr=require('kule-util/lib/firstAttr').default;
 const _cwd=process.cwd();
 
+const getFileDir=(entry={})=>{
+    let file=firstAttr(entry);
+    if(isArray){
+        file=last(file);
+    }
+    return path.dirname(file||'');
+};
 const web=({
     cwd=_cwd,
     env,
+    babelExclude=()=>{return false},
     ...config
 })=>{
     const _env = defaultsDeep({},env, {
         debug: true,
         useBuiltIns: true
     });
-    const entry=get(config,'entry',{});
-    const dir=path.dirname(firstAttr(entry)||'');
+    const dir=getFileDir(get(config,'entry'));
     return  defaultsDeep({},config,{
         entry:{
         },
@@ -44,9 +55,9 @@ const web=({
                             [
                                 require('babel-plugin-transform-runtime'),
                                 {
-                                    "helpers": true,
+                                    // "helpers": false,
                                     "polyfill": false,
-                                    "regenerator": true
+                                    // "regenerator": false
                                 }
                             ],
                             /*            [
@@ -54,7 +65,11 @@ const web=({
                                         ]*/
                         ],
                         comments: false
-                    }
+                    },
+                    exclude:[
+                        /\bnode_modules\b/i,
+                        ...castArray(babelExclude)
+                    ]
                 }
             ]
         }
