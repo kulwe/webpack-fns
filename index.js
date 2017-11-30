@@ -66,6 +66,18 @@ const jsRule = ({
         ]
     };
 };
+const getResolve=({
+    cwd=_cwd
+}={})=>{
+    return {
+        alias:{
+            'public':path.join(cwd,'./src/public'),
+            'pages':path.join(cwd,'./src/pages'),
+            'assets':path.join(cwd,'./src/assets'),
+            '@':path.join(cwd,'./src/'),
+        }
+    }
+};
 const lessRuleUse = () => {
     return [
         {
@@ -82,6 +94,20 @@ const lessRuleUse = () => {
         }
     ];
 };
+const cssRuleUse = () => {
+    return [
+        {
+            loader: "css-loader"
+        }, {
+            loader: 'postcss-loader',
+            options: {
+                plugins: [
+                    require('autoprefixer')
+                ]
+            }
+        }
+    ];
+};
 const web = ({
     cwd = _cwd,
     env,
@@ -95,6 +121,9 @@ const web = ({
             path: path.join(cwd, dir),
             filename: '[name].bundle.js'
         },
+        resolve:getResolve({
+            cwd
+        }),
         module: {
             rules: [
                 jsRule({babelExclude,env}),
@@ -104,6 +133,15 @@ const web = ({
                         loader: "style-loader"
                     },
                         ...lessRuleUse()
+                    ]
+                },
+                {
+                    test:/\.css$/,
+                    use:[
+                        {
+                            loader: "style-loader"
+                        },
+                        ...cssRuleUse()
                     ]
                 }
             ]
@@ -131,6 +169,9 @@ const webRes = ({
             publicPath:'/dist/',
             filename: 'js/[name].bundle.js'
         },
+        resolve:getResolve({
+            cwd
+        }),
         module: {
             rules: [
                 jsRule({
@@ -143,6 +184,13 @@ const webRes = ({
                         use: lessRuleUse(),
                         fallback: 'style-loader'
                     }),
+                },
+                {
+                    test:/\.css$/,
+                    use: extractLess.extract({
+                        use: cssRuleUse(),
+                        fallback: 'style-loader'
+                    })
                 }
             ]
         },
